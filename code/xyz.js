@@ -1,70 +1,101 @@
-document.addEventListener('DOMContentLoaded', () => { 
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('myForm');
+    const submitButton = document.getElementById('submitButton');
+    const inputs = form.querySelectorAll('input, textarea');
+    const formDataContainer = document.getElementById('formData');
+    const formDataBody = document.getElementById('formDataBody');
 
-const form = document.getElementById('myForm'); 
-const editButton = document.getElementById('editButton'); 
-const submitButton = document.getElementById('submitButton'); 
-const inputs = form.querySelectorAll('input, textarea'); 
-const formDataContainer = document.getElementById('formData');
-const storedName = document.getElementById('storedName'); 
-const storedEmail = document.getElementById('storedEmail'); 
-const storedMessage = document.getElementById('storedMessage'); 
+    let storedFormDataList = JSON.parse(localStorage.getItem('formDataList')) || [];
 
-const storedFormData = JSON.parse(localStorage.getItem('formData')) || {};
- 
-document.getElementById('name').value = storedFormData.name || ''; 
-document.getElementById('email').value = storedFormData.email || ''; 
-document.getElementById('message').value = storedFormData.message || ''; 
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
+        const isValid = await validateFormData();
+        if (isValid) {
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                message: document.getElementById('message').value,
+            };
 
-  
-form.addEventListener('submit', async (e) => {
- e.preventDefault();
- 
- const isValid = await validateFormData();
- if (isValid)
-	 { 
-       inputs.forEach(input => { 
-          input.readOnly = true; 
-		  });
-		  
-		submitButton.disabled = true;
-		editButton.disabled = false;
+            storedFormDataList.push(formData);
 
-        const formData = { name: document.getElementById('name').value, email: document.getElementById('email').value, message: 
-        document.getElementById('message').value, }; 
+            localStorage.setItem('formDataList', JSON.stringify(storedFormDataList));
 
-        localStorage.setItem('formData', JSON.stringify(formData)); 
+            inputs.forEach(input => {
+                input.value = ''; // Clear the input fields
+            });
 
-        displayStoredFormData(formData);
-     }
- else 
-     {
-	 alert('Form data is not valid.'); 
-     }
- 
- }); 
- 
- editButton.addEventListener('click', () => { 
-   inputs.forEach(input => {
-       input.readOnly = false;
-	   }); 
-	   
-    submitButton.disabled = false;
-    editButton.disabled = true;
-    formDataContainer.classList.add('hidden');
- }); 
- 
- async function validateFormData(){ 
-   return true; 
-   } 
-   
-function displayStoredFormData(formData) { 
+            // Refresh the displayed entries
+            displayStoredFormDataList(storedFormDataList);
+        } else {
+            alert('Form data is not valid.');
+        }
+    });
 
-storedName.textContent = formData.name; 
-storedEmail.textContent = formData.email; 
-storedMessage.textContent = formData.message; 
-formDataContainer.classList.remove('hidden'); 
+    async function validateFormData() {
+        return true; // You can add validation logic here
+    }
 
-} 
+    function displayStoredFormDataList(formDataList) {
+        // Clear the existing table body
+        formDataBody.innerHTML = '';
+
+        // Loop through the stored form data and add rows to the table
+        formDataList.forEach((formData, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${formData.name}</td>
+                <td>${formData.email}</td>
+                <td>${formData.message}</td>
+                <td>
+                    <button onclick="editEntry(${index})">Edit</button>
+                    <button onclick="deleteEntry(${index})">Delete</button>
+                </td>
+            `;
+            formDataBody.appendChild(row);
+        });
+
+        // Show the table
+        formDataContainer.classList.remove('hidden');
+    }
+
+    // Edit an entry
+    window.editEntry = function (index) {
+        const entryToEdit = storedFormDataList[index];
+        if (entryToEdit) {
+            // Populate the form with the selected entry's data
+            document.getElementById('name').value = entryToEdit.name;
+            document.getElementById('email').value = entryToEdit.email;
+            document.getElementById('message').value = entryToEdit.message;
+
+            // Remove the entry from the list
+            storedFormDataList.splice(index, 1);
+
+            // Update local storage
+            localStorage.setItem('formDataList', JSON.stringify(storedFormDataList));
+
+            // Enable the submit button
+            submitButton.disabled = false;
+
+            // Refresh the displayed entries
+            displayStoredFormDataList(storedFormDataList);
+        }
+    };
+
+    // Delete an entry
+    window.deleteEntry = function (index) {
+        if (confirm('Are you sure you want to delete this entry?')) {
+            storedFormDataList.splice(index, 1);
+
+            // Update local storage
+            localStorage.setItem('formDataList', JSON.stringify(storedFormDataList));
+
+            // Refresh the displayed entries
+            displayStoredFormDataList(storedFormDataList);
+        }
+    };
+
+    // Display any existing stored data on page load
+    displayStoredFormDataList(storedFormDataList);
 });
-
