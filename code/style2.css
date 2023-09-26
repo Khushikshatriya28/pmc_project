@@ -1,50 +1,71 @@
-#myForm { 
-   width: 300px; 
-   margin: 0 auto; 
-   } 
+#myForm {
+    width: 300px;
+    margin: 0 auto;
+}
 
-label { 
-   display: block; 
-   margin-bottom: 10px; 
-   } 
+label {
+    display: block;
+    margin-bottom: 10px;
+}
 
-input[type="text"], input[type="email"], textarea { 
-   width: 100%; 
-   padding: 5px; 
-   margin-bottom: 10px; 
-   } 
+input[type="text"],
+input[type="email"],
+textarea {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 10px;
+}
 
-#submitButton { 
-   background-color: #007bff; 
-   color: #fff;
-   padding: 10px 20px; 
-   border: none; 
-   cursor: pointer; 
-   } 
-   
-#submitButton:disabled{
-   background color: gray;
-   color: #ccc;
-   
-   }
+#submitButton {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+}
 
-#editButton { 
-   background-color: #333; 
-   color: #fff; 
-   padding: 10px 20px;
-   border: none; 
-   cursor: pointer; 
-   }
+#formData {
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
 
-   
-#editButton:disabled{
-   background color: gray;
-   color: #ccc;
-   
-   }
+/* Style for the table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
 
-#formData { 
-   margin-top: 20px; 
-   border: 1px solid #ccc;
-   padding: 10px; 
-   }
+/* Style for table header cells */
+th {
+    background-color: #f2f2f2;
+    text-align: center;
+    padding: 8px;
+    border: 1px solid #ddd;
+}
+
+/* Style for table body rows */
+td {
+    padding: 8px;
+    border: 1px solid #ddd;
+}
+
+/* Style for action buttons in the last column */
+td:last-child {
+    text-align: center;
+}
+
+/* Style for action buttons */
+button {
+    padding: 5px 10px;
+    background-color: rgba(74, 78, 74, 0.942);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+/* Hover effect for action buttons */
+button:hover {
+    background-color: crimson;
+}
